@@ -26,6 +26,7 @@ setup(name='anarci',
       #                         'dat/HMMs/ALL.hmm.h3m',
       #                         'dat/HMMs/ALL.hmm.h3p']},
       scripts=['bin/ANARCI'],
+      install_requires=['biopython>=1.78'],
       data_files = [ ('bin', ['bin/muscle', 'bin/muscle_macOS']) ]
      )
 
@@ -35,11 +36,7 @@ if sys.argv[1] != "install":
     sys.exit(0)
 
 try:
-#     toolbox_specs = importlib.util.find_spec("anarci")
-#     toolbox = importlib.util.module_from_spec(toolbox_specs)
-#     toolbox_specs.loader.exec_module(toolbox)
     ANARCI_LOC = importlib.util.find_spec("anarci")
-#     ANARCI_LOC = imp.find_module("anarci")[1]
 except:
     sys.stderr.write("Something isn't right. Aborting.")
     sys.exit(1)
