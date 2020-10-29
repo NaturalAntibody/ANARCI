@@ -5,7 +5,7 @@
 # Maintained by members of OPIG #
 #                               #
 
-import shutil, os, subprocess, imp
+import shutil, os, subprocess, importlib
 # Clean this out if it exists
 if os.path.isdir("build"):
     shutil.rmtree("build/")
@@ -35,7 +35,11 @@ if sys.argv[1] != "install":
     sys.exit(0)
 
 try:
-    ANARCI_LOC = imp.find_module("anarci")[1]
+#     toolbox_specs = importlib.util.find_spec("anarci")
+#     toolbox = importlib.util.module_from_spec(toolbox_specs)
+#     toolbox_specs.loader.exec_module(toolbox)
+    ANARCI_LOC = importlib.util.find_spec("anarci")
+#     ANARCI_LOC = imp.find_module("anarci")[1]
 except:
     sys.stderr.write("Something isn't right. Aborting.")
     sys.exit(1)
