@@ -1,0 +1,7 @@
+__pycache__
+anarci.egg-info
+
+build
+
+*.pyc
+.DS_Store
