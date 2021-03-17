@@ -25,10 +25,10 @@ def download_files():
     os.chdir("build_pipeline")
 
     try:
-        shutil.rmtree("curated_alignments/")
-        shutil.rmtree("muscle_alignments/")
-        shutil.rmtree("HMMs/")
-        shutil.rmtree("IMGT_sequence_files/")
+        # shutil.rmtree("curated_alignments/")
+        # shutil.rmtree("muscle_alignments/")
+        # shutil.rmtree("HMMs/")
+        # shutil.rmtree("IMGT_sequence_files/")
         os.mkdir(os.path.join(ANARCI_LOC, "dat"))
     except OSError:
         pass
@@ -41,6 +41,7 @@ def download_files():
     print(e.decode())
 
     shutil.copy( "curated_alignments/germlines.py", ANARCI_LOC )
+    shutil.rmtree(os.path.join(ANARCI_LOC, "dat/HMMs/"))
     shutil.copytree( "HMMs", os.path.join(ANARCI_LOC, "dat/HMMs/") )
 
 
