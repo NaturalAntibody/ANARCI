@@ -27,7 +27,7 @@ def download_files():
     try:
         # shutil.rmtree("curated_alignments/")
         # shutil.rmtree("muscle_alignments/")
-        # shutil.rmtree("HMMs/")
+        shutil.rmtree("HMMs/")
         # shutil.rmtree("IMGT_sequence_files/")
         os.mkdir(os.path.join(ANARCI_LOC, "dat"))
     except OSError:
