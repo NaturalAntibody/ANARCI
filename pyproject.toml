@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "anarci"
-version = "1.3.2"
+version = "1.3.3"
 description = ""
 authors = ["Piotr Deszyński <deszynski@red-sky.pl>"]
 
