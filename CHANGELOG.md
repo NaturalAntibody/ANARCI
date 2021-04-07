@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v1.3.4 (2021-04-07)
+### Fix
+* **build:** Removed dependencies completely ([`c3d3a7c`](https://github.com/NaturalAntibody/ANARCI/commit/c3d3a7c33c2aeefdd7f21f7ca5d541fd3716a2b1))
+
 ## v1.3.3 (2021-04-07)
 ### Fix
 * **build:** Removed hmmscan as a requires ([`715ca24`](https://github.com/NaturalAntibody/ANARCI/commit/715ca2433b81e873866704282d70187d01844cca))
