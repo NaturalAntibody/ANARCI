@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v1.3.9 (2021-04-07)
+### Fix
+* **pyproject:** Renamed package ([`d3f0a6d`](https://github.com/NaturalAntibody/ANARCI/commit/d3f0a6d40f3e23721038fc4d9ec6d98a61f38c29))
+
 ## v1.3.8 (2021-04-07)
 
 

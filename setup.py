@@ -14,7 +14,7 @@ if os.path.isdir("build"):
 from distutils.core import setup
 from setuptools.command.install import install
 
-__version__ = '1.3.8'
+__version__ = '1.3.9'
 
 def download_files():
     try:
