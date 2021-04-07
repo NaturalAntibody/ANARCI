@@ -19,8 +19,9 @@ __version__ = '1.3.6'
 def download_files():
     try:
         ANARCI_LOC = os.path.dirname(importlib.util.find_spec("anarci").origin)
-    except:
+    except Exception as e:
         sys.stderr.write("Something isn't right. Aborting.")
+        sys.stderr.write(e)
         sys.exit(1)
 
     os.chdir("build_pipeline")
