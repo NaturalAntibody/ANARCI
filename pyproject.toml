@@ -29,6 +29,7 @@ python-semantic-release = "^7.3.0"
 commitizen = "^2.6.0"
 
 [build-system]
+requires = ["setuptools"]
 # build-backend = "poetry.core.masonry.api"
 build-backend = "setuptools.build_meta"
 
