@@ -14,6 +14,7 @@ if os.path.isdir("build"):
 from distutils.core import setup
 from setuptools.command.install import install
 
+__version__ = '1.3.1'
 
 def download_files():
     try:
@@ -53,7 +54,7 @@ class Install(install):
 
 
 setup(name='anarci',
-      version='1.3',
+      version=__version__,
       description='Antibody Numbering and Receptor ClassIfication',
       author='James Dunbar',
       author_email='opig@stats.ox.ac.uk',
