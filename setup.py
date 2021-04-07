@@ -21,7 +21,7 @@ def download_files():
         ANARCI_LOC = os.path.dirname(importlib.util.find_spec("anarci").origin)
     except Exception as e:
         sys.stderr.write("Something isn't right. Aborting.")
-        sys.stderr.write(e)
+        sys.stderr.write(str(e))
         sys.exit(1)
 
     os.chdir("build_pipeline")
