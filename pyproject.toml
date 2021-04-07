@@ -5,7 +5,7 @@ description = ""
 authors = ["Piotr Deszyński <deszynski@red-sky.pl>"]
 
 packages = [
-    { include = "lib/python/anarci" },
+    { include = "anarci", from = "lib/python" },
     { include = "bin" },
 ]
 
