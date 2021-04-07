@@ -121,7 +121,8 @@ def write_fasta(sequences, f):
     """
     for name, sequence in sequences:
         print(">%s"%name, file=f)
-        print('\n'.join(['\n'.join(wrap(block, width=80)) for block in sequence.splitlines()]), file=f)
+        # replacing dashes with dots, because hmmscan does not like them for some reason
+        print('\n'.join(['\n'.join(wrap(block.replace('-', '.'), width=80)) for block in sequence.splitlines()]), file=f)
     
     
 def validate_sequence(sequence):
