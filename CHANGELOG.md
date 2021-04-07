@@ -2,6 +2,9 @@
 
 <!--next-version-placeholder-->
 
+## v1.3.7 (2021-04-07)
+
+
 ## v1.3.6 (2021-04-07)
 ### Fix
 * **build:** Added setuptools version requirement ([`9fbe850`](https://github.com/NaturalAntibody/ANARCI/commit/9fbe850343d0d96a67d8ad0e3c5e518c3b062883))
