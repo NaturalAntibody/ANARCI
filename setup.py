@@ -5,27 +5,30 @@
 # Maintained by members of OPIG #
 #                               #
 
-import shutil, os, subprocess, importlib, sys
+import importlib
+import os
+import shutil
+import subprocess
+import sys
+import traceback
 
 # Clean this out if it exists
 if os.path.isdir("build"):
     shutil.rmtree("build/")
 
 from distutils.core import setup
+
 from setuptools.command.install import install
 
 __version__ = '1.3.9'
 
-def get_anacri_loc() -> str:
+def download_files():
     try:
-        return os.path.dirname(importlib.util.find_spec("anarci").origin)
+        ANARCI_LOC = os.path.dirname(importlib.util.find_spec("anarci").origin)
     except Exception as e:
         sys.stderr.write("Something isn't right. Aborting.")
         sys.stderr.write(str(e))
         sys.exit(1)
-
-def download_files():
-    ANARCI_LOC = get_anacri_loc()
 
     os.chdir("build_pipeline")
 
@@ -40,23 +43,25 @@ def download_files():
 
     print('Downloading germlines from IMGT and building HMMs...')
     proc = subprocess.Popen(["bash", "RUN_pipeline.sh"], stdout = subprocess.PIPE, stderr = subprocess.PIPE)
-    o, e = proc.communicate()
+    out, err = proc.communicate()
 
-    print(o.decode())
-    print(e.decode())
+    print(out.decode())
+    print(err.decode())
 
     shutil.copy( "curated_alignments/germlines.py", ANARCI_LOC )
     shutil.rmtree(os.path.join(ANARCI_LOC, "dat/HMMs/"))
     shutil.copytree( "HMMs", os.path.join(ANARCI_LOC, "dat/HMMs/") )
 
-def link_muscle(scripts_path: str) -> None:
+def link_muscle(base_path: str) -> None:
     filename = 'muscle_macOS' if sys.platform == 'darwin' else 'muscle_linux'
-    os.symlink(os.path.join(scripts_path, filename), os.path.join(scripts_path, 'muscle'), False)
+    bin_path = os.path.join(base_path, 'bin')
+    print('linking muscle for your platform', os.path.join(bin_path, filename), '->', os.path.join(bin_path, 'muscle'))
+    os.symlink(os.path.join(bin_path, filename), os.path.join(bin_path, 'muscle'), False)
 class Install(install):
 
     def run(self):
         super().run()
-        link_muscle(self.install_scripts)
+        link_muscle(self.install_data)
         download_files()
 
 
