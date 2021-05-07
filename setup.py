@@ -16,13 +16,16 @@ from setuptools.command.install import install
 
 __version__ = '1.3.9'
 
-def download_files():
+def get_anacri_loc() -> str:
     try:
-        ANARCI_LOC = os.path.dirname(importlib.util.find_spec("anarci").origin)
+        return os.path.dirname(importlib.util.find_spec("anarci").origin)
     except Exception as e:
         sys.stderr.write("Something isn't right. Aborting.")
         sys.stderr.write(str(e))
         sys.exit(1)
+
+def download_files():
+    ANARCI_LOC = get_anacri_loc()
 
     os.chdir("build_pipeline")
 
@@ -46,11 +49,14 @@ def download_files():
     shutil.rmtree(os.path.join(ANARCI_LOC, "dat/HMMs/"))
     shutil.copytree( "HMMs", os.path.join(ANARCI_LOC, "dat/HMMs/") )
 
-
+def link_muscle(scripts_path: str) -> None:
+    filename = 'muscle_macOS' if sys.platform == 'darwin' else 'muscle_linux'
+    os.symlink(os.path.join(scripts_path, filename), os.path.join(scripts_path, 'muscle'), False)
 class Install(install):
 
     def run(self):
         super().run()
+        link_muscle(self.install_scripts)
         download_files()
 
 
@@ -69,7 +75,7 @@ setup(name='anarci',
                               'dat/HMMs/ALL.hmm.h3p']},
       scripts=['bin/ANARCI'],
       install_requires=['biopython>=1.78'],
-      data_files = [ ('bin', ['bin/muscle', 'bin/muscle_macOS']) ],
+      data_files = [ ('bin', ['bin/muscle_linux', 'bin/muscle_macOS']) ],
       cmdclass={'install': Install}
      )
 

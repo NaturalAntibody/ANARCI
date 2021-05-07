@@ -178,7 +178,7 @@ def format_j_genes(jalignments):
     if sys.platform == "darwin":
         pr = Popen( [ "muscle_macOS", "-in", ffile, "-gapopen", "-10", "-out", al_filename, ], stdout=PIPE, stderr=PIPE )
     else:
-        pr = Popen( [ "muscle", "-in", ffile, "-gapopen", "-10", "-out", al_filename, ], stdout=PIPE, stderr=PIPE )
+        pr = Popen( [ "muscle_linux", "-in", ffile, "-gapopen", "-10", "-out", al_filename, ], stdout=PIPE, stderr=PIPE )
     o, e = pr.communicate()
     aligned = read_fasta( al_filename )
     new_jalignments = {} 
