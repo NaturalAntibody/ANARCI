@@ -22,18 +22,18 @@ from setuptools.command.install import install
 
 __version__ = '1.3.10'
 
-def download_files(libbase: str) -> None:
+def download_files() -> None:
     try:
+        # setuptools will install lib directly into final location before finishing build
+        # so we need to take path, where anarci was already moved
         ANARCI_LOC = os.path.dirname(importlib.util.find_spec("anarci").origin)
     except Exception as e:
-        sys.stderr.write("Something isn't right. Aborting.")
-        sys.stderr.write(str(e))
+        sys.stderr.write(f"Non setup.py install detected. Setting anarci loc to {os.getcwd()}")
         # sys.exit(1)
-        ANARCI_LOC = libbase
-
-    # os.chdir("build_pipeline")
-
-    print('anarci loc', os.listdir(ANARCI_LOC))
+        # if using setuptools meta build, then before moving anarci, it will be installed into a temp dir.
+        # All data will be copied into final destination after full build is performed. 
+        # Here we are setting it to our temporary build dir
+        ANARCI_LOC = os.getcwd()
 
     try:
         # shutil.rmtree("curated_alignments/")
@@ -49,7 +49,10 @@ def download_files(libbase: str) -> None:
     out, err = proc.communicate()
 
     print(out.decode())
-    print(err.decode())
+    if proc.returncode != 0:
+        raise RuntimeError(err.decode())
+    else:
+        print(err.decode())
 
     shutil.copy( "build_pipeline/curated_alignments/germlines.py", ANARCI_LOC )
     hmms_loc = os.path.join(ANARCI_LOC, "dat/HMMs/")
@@ -62,22 +65,14 @@ def link_muscle(bin_path: str) -> None:
     bin_path = os.path.join(bin_path, 'bin')
     print('linking muscle for your platform', os.path.join(bin_path, filename), '->', os.path.join(bin_path, 'muscle'))
     os.symlink(os.path.join(bin_path, filename), os.path.join(bin_path, 'muscle'), False)
-    try:
-        os.symlink(os.path.join('bin', filename), os.path.join('bin', 'muscle'), False)
-    except IOError:
-        pass
 class Install(install):
 
     def run(self):
+        # link muscle for current platform.
+        # setuptools then will copy correct file using data_files attribute
+        link_muscle(os.getcwd())
         super().run()
-        try:
-            shutil.copy2('bin/muscle_linux', os.path.join(self.install_base, 'bin'))
-            shutil.copy2('bin/muscle_macOS', os.path.join(self.install_base, 'bin'))
-            link_muscle(self.install_base)
-        except IOError:
-            pass
-        link_muscle(self.install_data)
-        download_files(os.path.realpath(self.install_libbase))
+        download_files()
 
 
 setup(name='anarci',
@@ -95,7 +90,7 @@ setup(name='anarci',
                               'dat/HMMs/ALL.hmm.h3p']},
       scripts=['bin/ANARCI'],
       install_requires=['biopython>=1.78'],
-      data_files = [ ('bin', ['bin/muscle_linux', 'bin/muscle_macOS']) ],
+      data_files = [ ('bin', ['bin/muscle_linux', 'bin/muscle_macOS', 'bin/muscle']) ],
       cmdclass={'install': Install}
      )
 

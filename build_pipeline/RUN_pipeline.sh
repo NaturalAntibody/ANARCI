@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+
+set -e
 # Run the pipeline to get the sequences, format them and build the databases
 
 DIR="."
