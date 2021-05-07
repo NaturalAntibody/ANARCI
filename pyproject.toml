@@ -11,6 +11,7 @@ packages = [
 
 [tool.poetry.dependencies]
 python = "^3.7,<3.10"
+biopython = "^1.78"
 
 [tool.poetry.dev-dependencies]
 pylint = "^2.6.0"

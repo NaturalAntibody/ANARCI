@@ -22,15 +22,18 @@ from setuptools.command.install import install
 
 __version__ = '1.3.10'
 
-def download_files():
+def download_files(libbase: str) -> None:
     try:
         ANARCI_LOC = os.path.dirname(importlib.util.find_spec("anarci").origin)
     except Exception as e:
         sys.stderr.write("Something isn't right. Aborting.")
         sys.stderr.write(str(e))
-        sys.exit(1)
+        # sys.exit(1)
+        ANARCI_LOC = libbase
 
-    os.chdir("build_pipeline")
+    # os.chdir("build_pipeline")
+
+    print('anarci loc', os.listdir(ANARCI_LOC))
 
     try:
         # shutil.rmtree("curated_alignments/")
@@ -42,27 +45,39 @@ def download_files():
         pass
 
     print('Downloading germlines from IMGT and building HMMs...')
-    proc = subprocess.Popen(["bash", "RUN_pipeline.sh"], stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+    proc = subprocess.Popen(["bash", "RUN_pipeline.sh"], stdout = subprocess.PIPE, stderr = subprocess.PIPE, cwd="build_pipeline")
     out, err = proc.communicate()
 
     print(out.decode())
     print(err.decode())
 
-    shutil.copy( "curated_alignments/germlines.py", ANARCI_LOC )
-    shutil.rmtree(os.path.join(ANARCI_LOC, "dat/HMMs/"))
-    shutil.copytree( "HMMs", os.path.join(ANARCI_LOC, "dat/HMMs/") )
+    shutil.copy( "build_pipeline/curated_alignments/germlines.py", ANARCI_LOC )
+    hmms_loc = os.path.join(ANARCI_LOC, "dat/HMMs/")
+    if os.path.exists(hmms_loc):
+        shutil.rmtree(hmms_loc)
+    shutil.copytree("build_pipeline/HMMs", hmms_loc)
 
-def link_muscle(base_path: str) -> None:
+def link_muscle(bin_path: str) -> None:
     filename = 'muscle_macOS' if sys.platform == 'darwin' else 'muscle_linux'
-    bin_path = os.path.join(base_path, 'bin')
+    bin_path = os.path.join(bin_path, 'bin')
     print('linking muscle for your platform', os.path.join(bin_path, filename), '->', os.path.join(bin_path, 'muscle'))
     os.symlink(os.path.join(bin_path, filename), os.path.join(bin_path, 'muscle'), False)
+    try:
+        os.symlink(os.path.join('bin', filename), os.path.join('bin', 'muscle'), False)
+    except IOError:
+        pass
 class Install(install):
 
     def run(self):
         super().run()
+        try:
+            shutil.copy2('bin/muscle_linux', os.path.join(self.install_base, 'bin'))
+            shutil.copy2('bin/muscle_macOS', os.path.join(self.install_base, 'bin'))
+            link_muscle(self.install_base)
+        except IOError:
+            pass
         link_muscle(self.install_data)
-        download_files()
+        download_files(os.path.realpath(self.install_libbase))
 
 
 setup(name='anarci',
