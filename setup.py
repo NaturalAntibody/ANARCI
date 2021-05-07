@@ -20,7 +20,7 @@ from distutils.core import setup
 
 from setuptools.command.install import install
 
-__version__ = '1.3.9'
+__version__ = '1.3.10'
 
 def download_files():
     try:
