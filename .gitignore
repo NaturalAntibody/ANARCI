@@ -148,4 +148,5 @@ dmypy.json
 
 ## Vscode project
 /dist
+/build
 build_pipeline/HMMs/
