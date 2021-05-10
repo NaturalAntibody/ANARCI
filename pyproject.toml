@@ -7,6 +7,7 @@ authors = ["Piotr Deszyński <deszynski@red-sky.pl>"]
 packages = [
     { include = "anarci", from = "lib/python" },
     { include = "bin" },
+    { include = "dat" },
 ]
 
 [tool.poetry.dependencies]

@@ -5,7 +5,6 @@
 # Maintained by members of OPIG #
 #                               #
 
-import importlib
 import os
 import shutil
 import subprocess
@@ -21,25 +20,15 @@ from setuptools.command.install import install
 
 __version__ = '1.3.10'
 
-def download_files() -> None:
-    try:
-        # setuptools will install lib directly into final location before finishing build
-        # so we need to take path, where anarci was already moved
-        ANARCI_LOC = os.path.dirname(importlib.util.find_spec("anarci").origin)
-    except Exception as e:
-        sys.stderr.write(f"Non setup.py install detected. Setting anarci loc to {os.getcwd()}")
-        # sys.exit(1)
-        # if using setuptools meta build, then before moving anarci, it will be installed into a temp dir.
-        # All data will be copied into final destination after full build is performed. 
-        # Here we are setting it to our temporary build dir
-        ANARCI_LOC = os.getcwd()
+PACKAGE_DIR = os.path.join('lib', 'python', 'anarci')
 
+def download_files(build_lib: str) -> None:
     try:
         # shutil.rmtree("curated_alignments/")
         # shutil.rmtree("muscle_alignments/")
         shutil.rmtree("HMMs/")
+        shutil.rmtree('build_pipeline/HMMs')
         # shutil.rmtree("IMGT_sequence_files/")
-        os.mkdir(os.path.join(ANARCI_LOC, "dat"))
     except OSError:
         pass
 
@@ -53,10 +42,12 @@ def download_files() -> None:
     else:
         print(err.decode())
 
-    shutil.copy( "build_pipeline/curated_alignments/germlines.py", ANARCI_LOC )
-    hmms_loc = os.path.join(ANARCI_LOC, "dat/HMMs/")
+    build_path = os.path.join(build_lib, 'anarci')
+    shutil.copy( "build_pipeline/curated_alignments/germlines.py", build_path)
+    hmms_loc = os.path.join(build_path, 'dat', 'HMMs')
     if os.path.exists(hmms_loc):
         shutil.rmtree(hmms_loc)
+
     shutil.copytree("build_pipeline/HMMs", hmms_loc)
 
 def link_muscle(bin_path: str) -> None:
@@ -70,8 +61,11 @@ class Install(install):
         # link muscle for current platform.
         # setuptools then will copy correct file using data_files attribute
         link_muscle(os.getcwd())
+        # download and build files for anarci using muscle. Do it before
+        # setuptools run, so all files will be correctly copied by an internal
+        # mechanisms
+        download_files(self.build_lib)
         super().run()
-        download_files()
 
 
 setup(name='anarci',
@@ -81,7 +75,7 @@ setup(name='anarci',
       author_email='opig@stats.ox.ac.uk',
       url='http://opig.stats.ox.ac.uk/webapps/ANARCI',
       packages=['anarci'], 
-      package_dir={'anarci': 'lib/python/anarci'},
+      package_dir={'anarci': PACKAGE_DIR},
       package_data={'anarci': ['dat/HMMs/ALL.hmm',
                               'dat/HMMs/ALL.hmm.h3f',
                               'dat/HMMs/ALL.hmm.h3i',
