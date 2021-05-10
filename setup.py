@@ -62,8 +62,6 @@ class Install(install):
 
     def run(self):
         super().run()
-        import pprint
-        pprint.pprint(vars(self))
         link_muscle(self.install_scripts)
         download_files()
 
