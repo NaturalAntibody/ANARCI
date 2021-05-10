@@ -10,7 +10,6 @@ import os
 import shutil
 import subprocess
 import sys
-import traceback
 
 # Clean this out if it exists
 if os.path.isdir("build"):
