@@ -1,0 +1,53 @@
+[tool.poetry]
+name = "anarci"
+version = "1.3.10"
+description = ""
+authors = ["Piotr Deszyński <deszynski@red-sky.pl>"]
+
+packages = [
+    { include = "anarci", from = "lib/python" },
+    { include = "bin" },
+    { include = "anarci/dat" },
+]
+
+[tool.poetry.dependencies]
+python = "^3.7,<3.10"
+biopython = "^1.78"
+
+[tool.poetry.dev-dependencies]
+pylint = "^2.6.0"
+pytest = "^5.2"
+pre-commit = "^2.7.1"
+mypy = "^0.790"
+flake8 = "^3.8.4"
+ipython = "^7.18.1"
+pytest-cov = "^2.10.1"
+setuptools = "^50.3.2"
+autopep8 = "^1.5.4"
+ipyparallel = "^6.3.0"
+pytest-icdiff = "^0.5"
+rope = "^0.18.0"
+python-semantic-release = "^7.3.0"
+commitizen = "^2.6.0"
+
+[build-system]
+requires = ["setuptools>=47.1.1", "setuptools_scm[toml]>=4.1.2", "wheel>=0.34.2"]
+# build-backend = "poetry.core.masonry.api"
+build-backend = "setuptools.build_meta"
+
+[tool.semantic_release]
+version_variable = [
+    "lib/python/anarci/__init__.py:__version__",
+    "setup.py:__version__",
+    "pyproject.toml:version"
+]
+
+upload_to_pypi = false
+commit_version_number = true
+changelog_file = "CHANGELOG.md"
+hvcs = "github"
+build_command = "poetry build"
+commit_subject = "bump: {version}"
+
+[tool.commitizen]
+name = "cz_conventional_commits"

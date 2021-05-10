@@ -27,6 +27,7 @@ These are chucked into curated alignments and hmmbuild used to create the HMMs.
 """
 
 import os, sys
+from shutil import which
 from subprocess import Popen, PIPE
 from FastaIO import chunkify
 
@@ -175,10 +176,9 @@ def format_j_genes(jalignments):
     ffile = write_fasta(jalignments)
     al_filename = os.path.join( file_path, "muscle_alignments", "all_js_aligned.fasta" )
     
-    if sys.platform == "darwin":
-        pr = Popen( [ "muscle_macOS", "-in", ffile, "-gapopen", "-10", "-out", al_filename, ], stdout=PIPE, stderr=PIPE )
-    else:
-        pr = Popen( [ "muscle", "-in", ffile, "-gapopen", "-10", "-out", al_filename, ], stdout=PIPE, stderr=PIPE )
+    # try to use system muscle, but if one's missing, fallback to preinstalled one
+    muscle_command = 'muscle' if which('muscle') else '../bin/muscle'
+    pr = Popen( [ muscle_command, "-in", ffile, "-gapopen", "-10", "-out", al_filename, ], stdout=PIPE, stderr=PIPE )
     o, e = pr.communicate()
     aligned = read_fasta( al_filename )
     new_jalignments = {} 
